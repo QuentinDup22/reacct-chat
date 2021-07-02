@@ -22,8 +22,11 @@ const LoginScreen = ({ navigation }) => {
                 navigation.replace('Chat');
             } else {
                 // no user signed
+                // go to the top of the stack
+                navigation.canGoBack() && navigation.popToTop();
             }
-        })
+        });
+        return isSigned;
     }, [])
 
     return (
