@@ -3,7 +3,8 @@ import { StyleSheet, Text, View, Button, TouchableOpacity } from "react-native";
 import { auth, db } from "../firebase";
 import { AntDesign } from "@expo/vector-icons";
 import { Avatar } from "react-native-elements";
-import { GiftedChat } from 'react-native-gifted-chat'
+import { GiftedChat } from 'react-native-gifted-chat';
+import uuid from 'react-native-uuid';
 
 const ChatScreen = ({ navigation }) => {
 
@@ -70,6 +71,7 @@ const ChatScreen = ({ navigation }) => {
                             uri: auth?.currentUser.photoURL 
                         }} 
                     />
+                    <Text>{auth?.currentUser?.displayName}</Text>
                 </View>
             ),
 
@@ -84,6 +86,17 @@ const ChatScreen = ({ navigation }) => {
     }, [])
 
     const signOut = () => {
+        db.collection('chats').add({
+            _id: uuid.v4(),
+            createdAt: new Date(),
+            text: 'i\'m out !',
+            user: {
+                _id: auth?.currentUser?.email,
+                name: auth?.currentUser?.displayName,
+                avatar: auth?.currentUser?.photoURL
+            }
+        });
+
         auth.signOut().then(
             () => {
                 navigation.replace('Login');
